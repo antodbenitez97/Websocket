@@ -1,66 +1,143 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🔥 Fuego vs Hielo ❄️ — Tres en raya en tiempo real
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Juego de tres en raya para dos jugadores online, construido con **Laravel 12**, **Laravel Reverb** y **Laravel Echo**. Cada jugada se transmite por WebSockets, así que los dos jugadores ven el tablero actualizarse al instante, sin recargar la página.
 
-## About Laravel
+El **Jugador 1** juega con 🔥 Fuego y el **Jugador 2** con ❄️ Hielo.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+> Trabajo práctico de WebSockets con Laravel — Tecnicatura Universitaria en Programación (UTN FRRe).
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Características
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- Salas con código de 5 caracteres: se crea una sala y se comparte el código con el rival.
+- Tablero sincronizado en tiempo real mediante Reverb y Echo.
+- **Servidor como autoridad**: valida quién juega, de quién es el turno, si la casilla está libre y quién ganó. El navegador solo envía el número de casilla.
+- **Revancha** en la misma sala, alternando quién empieza.
+- **Marcador** de victorias de cada jugador y empates durante toda la sala.
+- **Indicador de presencia**: muestra si el rival está conectado (canal de presencia).
+- Avisos con **SweetAlert2**, **confeti** al ganar, **sonidos** (WebAudio, sin archivos) y animaciones.
+- Sin base de datos: el estado de cada partida vive en la caché y vence a las 2 horas.
 
-## Learning Laravel
+## Tecnologías
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+| Parte | Tecnología |
+|---|---|
+| Backend | PHP 8.2+, Laravel 12 |
+| WebSockets | Laravel Reverb (servidor) y Laravel Echo (cliente) |
+| Frontend | Blade, JavaScript, Vite |
+| Extras | SweetAlert2, canvas-confetti |
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## Requisitos
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- PHP 8.2 o superior
+- Composer
+- Node.js 20 o superior y npm
 
-## Laravel Sponsors
+No hace falta XAMPP, Apache ni MySQL: se usa el servidor integrado de Laravel.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## Instalación
 
-### Premium Partners
+```bash
+git clone https://github.com/antodbenitez97/Websocket.git
+cd Websocket
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+composer install
+npm install
 
-## Contributing
+copy .env.example .env      # en Linux/macOS: cp .env.example .env
+php artisan key:generate
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Abrí el archivo `.env` y revisá estos valores:
 
-## Code of Conduct
+```env
+BROADCAST_CONNECTION=reverb
+QUEUE_CONNECTION=sync
+SESSION_DRIVER=file
+CACHE_STORE=file
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+REVERB_APP_ID=...
+REVERB_APP_KEY=...
+REVERB_APP_SECRET=...
+REVERB_HOST=localhost
+REVERB_PORT=8080
+REVERB_SCHEME=http
 
-## Security Vulnerabilities
+VITE_REVERB_APP_KEY="${REVERB_APP_KEY}"
+VITE_REVERB_HOST="${REVERB_HOST}"
+VITE_REVERB_PORT="${REVERB_PORT}"
+VITE_REVERB_SCHEME="${REVERB_SCHEME}"
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Si faltan las variables `REVERB_*`, ejecutá `php artisan reverb:install` para generarlas.
 
-## License
+## Cómo ejecutarlo
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Se necesitan **tres terminales** abiertas a la vez, todas dentro de la carpeta del proyecto:
+
+```bash
+# 1. Servidor web
+php artisan serve --host=0.0.0.0 --port=8000
+
+# 2. Servidor WebSocket
+php artisan reverb:start
+
+# 3. Compilación de assets
+npm run dev
+```
+
+Después entrá a **http://localhost:8000**.
+
+## Cómo jugar
+
+1. El Jugador 1 entra y toca **Crear sala**.
+2. Copia el código de la sala (botón **Copiar**) y se lo pasa al rival.
+3. El Jugador 2 lo ingresa en **Entrar a la sala**.
+4. Juegan por turnos. Al terminar la ronda pueden pedir la **revancha**.
+
+> Para probarlo solo, abrí al Jugador 2 en una **ventana de incógnito** o en otro navegador: las pestañas del mismo navegador comparten la sesión y cuentan como el mismo jugador.
+
+## Cómo funciona
+
+```
+Navegador (Jugador)                Servidor Laravel                 Reverb
+        │                                 │                            │
+        │── POST /partidas/{c}/jugar ────▶│                            │
+        │                                 │ valida turno, casilla,     │
+        │                                 │ ganador y actualiza caché  │
+        │                                 │── broadcast(evento) ──────▶│
+        │◀────────────────────── WebSocket (Echo) ─────────────────────│
+        │   dibuja el nuevo estado        │                            │
+```
+
+- **Evento** `PartidaActualizada` (`ShouldBroadcastNow`): se emite por el canal público `partida.{codigo}` con el estado del tablero, el turno, el marcador y la ronda. No incluye identificadores de nadie.
+- **Canal de presencia** `presencia.{codigo}`: solo pueden entrar los dos jugadores de la sala (autorización en `routes/channels.php`). Se usa para mostrar quién está conectado.
+- **Middleware `JugadorInvitado`**: como no hay login, asigna a cada visitante una identidad anónima (UUID guardado en la sesión) que los canales de presencia necesitan.
+- **`Cache::lock`**: evita que dos jugadas simultáneas se pisen entre sí.
+- **Seguridad**: el cliente nunca decide el resultado. Aunque alguien habilite un botón desde la consola, el servidor rechaza las jugadas inválidas.
+
+## Estructura principal
+
+```
+app/
+├── Events/PartidaActualizada.php          # Evento que se transmite por WebSocket
+├── Http/Controllers/PartidaController.php # Lógica del juego y validaciones
+└── Http/Middleware/JugadorInvitado.php    # Identidad anónima del jugador
+routes/
+├── web.php                                # Rutas del lobby y de la partida
+└── channels.php                           # Autorización del canal de presencia
+resources/
+├── js/echo.js                             # Configuración de Echo + Reverb
+└── views/
+    ├── lobby.blade.php                    # Pantalla de inicio
+    └── partida.blade.php                  # Tablero, marcador y efectos
+```
+
+## Ideas para seguir mejorando
+
+- Canales privados con usuarios registrados.
+- Modo contra la computadora.
+- Ranking histórico guardado en base de datos.
+
+## Autor
+
+Anto — proyecto de WebSockets con Laravel.
